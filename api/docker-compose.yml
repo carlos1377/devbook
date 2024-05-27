@@ -1,0 +1,14 @@
+services:
+  devbook-mysql:
+    image: mysql
+    env_file:
+      - ./.env
+    ports:
+      - 3306:3306
+    expose:
+      - 3306
+    volumes:
+      - ./mysql_devbook:/var/lib/mysql_devbook
+
+volumes:
+  go-mysql:
