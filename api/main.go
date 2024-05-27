@@ -11,7 +11,7 @@ import (
 
 func main() {
 	config.Load()
-	fmt.Printf("Running on %d! 🚀", config.Port)
+	fmt.Printf("Running on %d! 🚀\n", config.Port)
 
 	r := router.Generate()
 
