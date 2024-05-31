@@ -1,11 +1,19 @@
 package authentication
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"time"
 
-func Hash(password string) ([]byte, error) {
-	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-}
+	"github.com/carlos1377/devbook/api/config"
+	jwt "github.com/dgrijalva/jwt-go"
+)
 
-func VerifyPassword(strPassword, hashPassword string) error {
-	return bcrypt.CompareHashAndPassword([]byte(hashPassword), []byte(strPassword))
+func CreateToken(userID uint64) (string, error) {
+	permissions := jwt.MapClaims{}
+	permissions["authorized"] = true
+	permissions["exp"] = time.Now().Add(time.Hour * 6).Unix()
+	permissions["userId"] = userID
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, permissions)
+
+	return token.SignedString(config.SecretKey)
 }

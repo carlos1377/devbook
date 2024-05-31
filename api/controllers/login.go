@@ -10,6 +10,7 @@ import (
 	"github.com/carlos1377/devbook/api/models"
 	"github.com/carlos1377/devbook/api/repositories"
 	"github.com/carlos1377/devbook/api/responses"
+	"github.com/carlos1377/devbook/api/security"
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
@@ -39,10 +40,14 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = authentication.VerifyPassword(user.Password, userOnDb.Password); err != nil {
+	if err = security.VerifyPassword(user.Password, userOnDb.Password); err != nil {
 		responses.Error(w, http.StatusUnauthorized, err)
 		return
 	}
 
-	w.Write([]byte("youre logged in!"))
+	token, err := authentication.CreateToken(userOnDb.ID)
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
 }

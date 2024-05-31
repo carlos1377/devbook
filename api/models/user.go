@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/badoux/checkmail"
-	"github.com/carlos1377/devbook/api/authentication"
+	"github.com/carlos1377/devbook/api/security"
 )
 
 type User struct {
@@ -55,7 +55,7 @@ func (u *User) format(step string) error {
 	u.Email = strings.TrimSpace(u.Email)
 
 	if step == "create" {
-		hashedPassword, err := authentication.Hash(u.Password)
+		hashedPassword, err := security.Hash(u.Password)
 		if err != nil {
 			return err
 		}
