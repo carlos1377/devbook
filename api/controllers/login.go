@@ -50,4 +50,10 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		responses.Error(w, http.StatusInternalServerError, err)
 		return
 	}
+
+	tokenResponse := map[string]string{
+		"token": token,
+	}
+
+	responses.JSON(w, http.StatusOK, tokenResponse)
 }

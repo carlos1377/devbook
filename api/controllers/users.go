@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/carlos1377/devbook/api/authentication"
 	"github.com/carlos1377/devbook/api/database"
 	"github.com/carlos1377/devbook/api/models"
 	"github.com/carlos1377/devbook/api/repositories"
@@ -98,6 +99,18 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		responses.Error(w, http.StatusBadRequest, err)
 		return
 	}
+
+	userIDOnToken, err := authentication.GetUserID(r)
+	if err != nil {
+		responses.Error(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	if userID != userIDOnToken {
+		responses.Error(w, http.StatusForbidden, err)
+		return
+	}
+
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		responses.Error(w, http.StatusUnprocessableEntity, err)
@@ -134,6 +147,17 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	userID, err := strconv.ParseUint(params["id"], 10, 64)
 	if err != nil {
 		responses.Error(w, http.StatusBadRequest, err)
+		return
+	}
+
+	userIDOnToken, err := authentication.GetUserID(r)
+	if err != nil {
+		responses.Error(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	if userID != userIDOnToken {
+		responses.Error(w, http.StatusForbidden, err)
 		return
 	}
 
