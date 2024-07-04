@@ -136,3 +136,17 @@ func (r users) SearchByEmail(email string) (models.User, error) {
 
 	return user, nil
 }
+
+func (r users) Follow(userID, followerID uint64) error {
+	statement, err := r.db.Prepare("INSERT IGNORE INTO followers (user_id, follower_id) VALUES (?, ?)")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(userID, followerID); err != nil {
+		return err
+	}
+
+	return nil
+}
